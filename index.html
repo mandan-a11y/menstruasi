@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pelacak Siklus Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3EEF5;--sf:#fff;--ink:#2B1B24;--mu:#765D69;--ro:#B8325A;--rs:#F8DCE4;--te:#16807A;--ts:#D2EEEA;--am:#9A5B00;--as:#FCEBC8;--ln:#E6D8DE;--nv:#33202B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171016;--sf:#241821;--ink:#F4E8ED;--mu:#BFA3AF;--ro:#D9567C;--rs:#552338;--te:#4CC3B8;--ts:#1B4744;--am:#F2B84B;--as:#4A3512;--ln:#44303B;--nv:#120B10}}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#splash{position:fixed;inset:0;z-index:50;background:linear-gradient(160deg,#2B1B24,#6B2347);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .5s}
+#splash.hide{opacity:0;pointer-events:none}
+#splash svg{width:84px;height:84px}
+#splash h1{margin:6px 0 0;font-size:1.7rem;font-weight:800}
+#splash p{margin:0;color:#D9C4CD}
+.bar{width:200px;height:4px;background:#ffffff30;border-radius:4px;overflow:hidden;margin-top:14px}
+.bar i{display:block;height:100%;width:0;background:#F28BA8;animation:ld 1.6s ease-out forwards}
+@keyframes ld{to{width:92%}}
+#splash small{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom,0px));color:#BFA3AF}
+header{padding:18px 16px 10px}
+.hw{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hw b{font-size:1.35rem;font-weight:800;flex:1;min-width:140px;letter-spacing:-.01em}
+select{font:inherit;font-weight:600;color:var(--ink);background:var(--sf);border:0;border-radius:99px;padding:8px 14px;max-width:180px;box-shadow:0 2px 10px rgba(80,30,60,.1)}
+.pill{font-size:.76rem;font-weight:700;padding:5px 12px;border-radius:99px;background:var(--ts);color:var(--te)}
+nav{padding:4px 16px 0}
+nav div{max-width:728px;margin:0 auto;display:flex;gap:4px;background:var(--sf);border-radius:99px;padding:5px;box-shadow:0 4px 18px rgba(80,30,60,.08)}
+nav button{flex:1;background:none;border:0;border-radius:99px;padding:10px 4px;font:inherit;font-weight:700;color:var(--mu);cursor:pointer;transition:background .2s,color .2s}
+nav button[aria-selected=true]{color:#fff;background:var(--ro)}
+main{max-width:760px;margin:0 auto;padding:18px 16px 24px}
+.card{background:var(--sf);border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 8px 28px rgba(80,30,60,.07)}
+h2{font-size:1.02rem;font-weight:800;margin:0 0 12px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#D13F6C,#8A2C7A);color:#fff;border-radius:24px;padding:24px;margin-bottom:16px;box-shadow:0 14px 34px rgba(160,40,100,.28)}
+.hero::after{content:"";position:absolute;right:-50px;top:-50px;width:170px;height:170px;border-radius:50%;background:#ffffff1c}
+.hero>*{position:relative;z-index:1}
+.hero .big{font-size:2rem;letter-spacing:-.02em;font-weight:800;line-height:1.2;margin:0 0 6px}
+.hero p{margin:2px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+label{display:flex;flex-direction:column;font-size:.82rem;color:var(--mu);gap:4px;font-weight:600}
+input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid transparent;border-radius:12px;padding:9px 10px;min-width:0}
+input.w{width:100%}
+input[type=number]{width:96px}
+button.b{font:inherit;font-weight:700;border:0;border-radius:12px;padding:11px 20px;cursor:pointer;background:linear-gradient(135deg,#D13F6C,#A82F80);color:#fff;box-shadow:0 6px 16px rgba(180,50,100,.3)}
+button.g{font:inherit;background:var(--bg);color:var(--mu);border:0;border-radius:10px;padding:6px 12px;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--te);outline-offset:2px}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.gr{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.dw{font-size:.76rem;color:var(--mu);font-weight:600}
+.d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:.9rem}
+.d.t{outline:2px solid var(--ink);outline-offset:-2px}
+.d.haid{background:var(--ro);color:#fff;font-weight:800}
+.d.prediksi{border:2px dashed var(--ro);color:var(--ro);font-weight:700}
+.d.subur{background:var(--ts)}
+.d.ovulasi{background:var(--te);color:#fff;font-weight:800}
+.lg{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:.84rem;color:var(--mu)}
+.lg i{display:inline-block;width:13px;height:13px;border-radius:50%;vertical-align:-2px;margin-right:5px}
+.fd{border-left:5px solid var(--te);background:var(--ts);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.fd.l1{border-color:var(--am);background:var(--as)}
+.fd.l2{border-color:var(--ro);background:var(--rs)}
+.fd strong{display:block}
+.fd em{font-style:normal;font-size:.8rem;font-weight:800;display:block;margin-bottom:2px}
+.fd p{margin:4px 0 0;font-size:.93rem}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--ln)}
+li:first-child{border-top:0}
+.mu{color:var(--mu);font-size:.86rem;margin:6px 0 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+footer{text-align:center;color:var(--mu);font-size:.85rem;padding:8px 16px 28px}
+footer b{color:var(--ink)}
+button.d{border:0;background:none;color:var(--ink);font:inherit;font-size:.9rem;padding:0;cursor:pointer;width:100%}
+.d.sel{box-shadow:0 0 0 3px var(--te)}
+.kv{background:var(--bg);border-radius:14px;padding:12px 14px}
+.kv span{display:block;font-size:.8rem;color:var(--mu)}
+.kv b{font-size:1.02rem}
+.vd{border-radius:14px;padding:14px 16px;font-weight:800;font-size:1.2rem;margin-bottom:8px;background:var(--ts);color:var(--te)}
+.vd.l1{background:var(--as);color:var(--am)}
+.vd.l2{background:var(--rs);color:var(--ro)}
+.ac{margin:4px 0 0;padding:0}
+.ac li{display:list-item;list-style:disc;border:0;padding:2px 0;margin-left:20px;font-size:.93rem}
+body.out>header,body.out>nav{display:none}
+@media (max-width:420px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="splash" role="status" aria-live="polite">
+  <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#B8325A"/><path d="M32 12c8 11 13 18 13 25a13 13 0 0 1-26 0c0-7 5-14 13-25z" fill="#fff"/></svg>
+  <h1>Pelacak Siklus Pro</h1>
+  <p id="sp-msg">Menyiapkan aplikasi…</p>
+  <div class="bar"><i></i></div>
+  <small>Dikembangkan oleh: Hasbullah Jaini</small>
+</div>
+
+<header><div class="hw">
+  <b id="hn">Pelacak Siklus Pro</b>
+  <select id="sel" aria-label="Pilih orang yang dipantau"></select>
+  <span class="pill" id="sync">Lokal</span>
+  <button class="g" id="so" type="button" aria-label="Keluar dari akun">Keluar</button>
+</div></header>
+<nav><div role="tablist">
+  <button role="tab" data-t="home" aria-selected="true">Beranda</button>
+  <button role="tab" data-t="hist" aria-selected="false">Riwayat</button>
+  <button role="tab" data-t="set" aria-selected="false">Pengaturan</button>
+</div></nav>
+<main id="app"></main>
+<footer>Aplikasi ini dikembangkan oleh: <b>Hasbullah Jaini</b><br>Perkiraan saja, bukan diagnosis medis dan bukan alat kontrasepsi.</footer>
+
+<script>
+(function(){
+var LS="siklus-pro-v3",MON=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],DW=["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+var API="https://script.google.com/macros/s/AKfycbxtquBBQOfOzkCxZNdb5Y8_2DOhrEnpQiLTknrH6zX-lPM7Ndof4um5re_DROShNbpsxw/exec",sess=null,authTab="in",authMsg="",authU="",selD="";
+var S={profiles:[],logs:[],cur:null},tab="home",edit=null,view,flash="";
+function $(i){return document.getElementById(i)}
+function pad(n){return n<10?"0"+n:""+n}
+function d2s(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function s2d(s){var a=s.split("-");return new Date(+a[0],+a[1]-1,+a[2])}
+function add(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n)}
+function diff(a,b){return Math.round((a-b)/864e5)}
+function fmt(d,y){return d.getDate()+" "+MON[d.getMonth()]+(y?" "+d.getFullYear():"")}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+var today=s2d(d2s(new Date()));view=new Date(today.getFullYear(),today.getMonth(),1);
+
+try{var r=JSON.parse(localStorage.getItem(LS));if(r){sess=r.sess||null;S.profiles=r.profiles||[];S.logs=r.logs||[];S.cur=r.cur}}catch(e){}
+function sv(){try{localStorage.setItem(LS,JSON.stringify({sess:sess,profiles:S.profiles,logs:S.logs,cur:S.cur}))}catch(e){}}
+function setSync(k){var m={local:"Lokal",sync:"Menyimpan…",ok:"Tersinkron ke Sheets",err:"Offline (tersimpan lokal)"};$("sync").textContent=m[k]}
+function hash(u,p){var t=u.toLowerCase()+":"+p;
+  if(window.crypto&&crypto.subtle&&window.TextEncoder)return crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return("0"+x.toString(16)).slice(-2)}).join("")});
+  var h=5381;for(var i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return Promise.resolve("w"+(h>>>0).toString(16));}
+function api(o){return fetch(API,{method:"POST",body:JSON.stringify(o)}).then(function(r){return r.json()})}
+function load(d){S.profiles=d.profiles||[];S.logs=(d.logs||[]).map(function(l){l.len=+l.len||0;return l});S.profiles.forEach(function(p){p.cycle=+p.cycle||28;p.plen=+p.plen||5});if(!S.profiles.some(function(p){return p.id===S.cur}))S.cur=S.profiles[0]?S.profiles[0].id:null;sv()}
+function push(){if(!sess)return;setSync("sync");api({a:"save",u:sess.u,h:sess.h,profiles:S.profiles,logs:S.logs}).then(function(d){setSync(d.ok?"ok":"err")}).catch(function(){setSync("err")})}
+function commit(){sv();push();render()}
+function login(u,p){return hash(u,p).then(function(h){return api({a:"login",u:u,h:h}).then(function(d){if(!d.ok)return d;sess={u:u.toLowerCase(),h:h,nama:d.nama};tab="home";load(d);setSync("ok");return d})})}
+function logout(){sess=null;S={profiles:[],logs:[],cur:null};tab="home";edit=null;authTab="in";authU="";selD="";try{localStorage.removeItem(LS)}catch(e){}render()}
+function doAuth(){
+  var u=$("a-u").value.trim().toLowerCase();authU=u;var b=$("a-go");
+  function fail(m){authMsg=m;render()}
+  function busy(){b.disabled=true;b.textContent="Memproses…"}
+  if(authTab==="in"){
+    var p=$("a-p").value;if(!u||!p)return fail("Isi username dan password.");
+    busy();login(u,p).then(function(d){if(d.ok){authMsg="";render()}else fail(d.msg||"Gagal masuk.")}).catch(function(){fail("Tidak dapat terhubung ke server.")});
+  }else{
+    var n=$("a-n").value.trim();
+    if(!/^[a-z0-9_.]{3,20}$/.test(u))return fail("Username 3–20 karakter: huruf kecil, angka, titik, atau garis bawah.");
+    if(!n)return fail("Isi nama lengkap.");
+    busy();hash(u,"123456").then(function(h){return api({a:"register",u:u,n:n,h:h})}).then(function(d){if(!d.ok)return fail(d.msg||"Gagal membuat akun.");return login(u,"123456").then(function(){authMsg="";tab="set";render()})}).catch(function(){fail("Tidak dapat terhubung ke server.")});
+  }
+}
+function authView(){
+  var up=authTab==="up";
+  return '<section class="card" style="max-width:420px;margin:20px auto"><div style="text-align:center"><svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#B8325A"/><path d="M32 12c8 11 13 18 13 25a13 13 0 0 1-26 0c0-7 5-14 13-25z" fill="#fff"/></svg><h2 style="font-size:1.4rem;margin:8px 0 2px">Pelacak Siklus Pro</h2><p class="mu" style="margin:0 0 14px">'+(up?"Buat akun baru":"Masuk ke akun Anda")+'</p></div>'
+   +'<nav style="padding:0 0 16px"><div role="tablist"><button role="tab" id="a-in" aria-selected="'+!up+'">Masuk</button><button role="tab" id="a-up" aria-selected="'+up+'">Buat akun</button></div></nav>'
+   +'<div style="display:grid;gap:10px"><label>Username<input class="w" id="a-u" autocomplete="username" value="'+esc(authU)+'"></label>'
+   +(up?'<label>Nama lengkap<input class="w" id="a-n" autocomplete="name"></label>':'<label>Password<input class="w" id="a-p" type="password" autocomplete="current-password"></label>')
+   +'</div><button class="b" id="a-go" type="button" style="width:100%;margin-top:16px">'+(up?"Buat akun":"Masuk")+'</button><p class="mu" id="a-msg" style="color:var(--ro)">'+esc(authMsg)+'</p>'
+   +'<p class="mu">'+(up?"Password awal akun baru adalah 123456. Segera ganti di menu Pengaturan setelah masuk.":"Password standar akun baru: 123456")+'</p></section>';
+}
+
+function P(){return S.profiles.filter(function(p){return p.id===S.cur})[0]}
+function starts(p){return S.logs.filter(function(l){return l.pid===p.id}).sort(function(a,b){return a.date<b.date?-1:1})}
+function cycles(L){var c=[];for(var i=1;i<L.length;i++)c.push(diff(s2d(L[i].date),s2d(L[i-1].date)));return c}
+function avg(p,L){var c=cycles(L);if(!c.length)return p.cycle;return Math.max(15,Math.round(c.reduce(function(a,b){return a+b},0)/c.length))}
+
+function analyze(p){
+  var L=starts(p),c=cycles(L),f=[],a=avg(p,L);
+  if(L.length<3)f.push({l:0,t:"Data belum cukup",d:"Catat minimal 3 siklus agar analisis keteraturan lebih akurat. Saat ini perkiraan memakai pengaturan siklus "+p.cycle+" hari."});
+  if(L.length>=2){
+    if(a<21)f.push({l:2,t:"Siklus terlalu pendek (rata-rata "+a+" hari)",d:"Siklus kurang dari 21 hari termasuk di luar batas umum. Sebaiknya konsultasi ke dokter kandungan untuk memeriksa hormon dan kemungkinan gangguan ovulasi."});
+    else if(a>35)f.push({l:2,t:"Siklus terlalu panjang (rata-rata "+a+" hari)",d:"Siklus lebih dari 35 hari bisa berkaitan dengan gangguan ovulasi, PCOS, atau tiroid. Disarankan periksa ke dokter, terutama jika disertai jerawat berat, bulu berlebih, atau berat badan berubah."});
+    var rg=Math.max.apply(null,c)-Math.min.apply(null,c);
+    if(c.length>=2&&rg>7)f.push({l:1,t:"Siklus tidak teratur (selisih "+rg+" hari)",d:"Jaga pola tidur, kelola stres, dan hindari perubahan berat badan drastis. Jika berlangsung 3 bulan atau lebih, konsultasikan ke dokter."});
+  }
+  var long=L.filter(function(l){return l.len>7}),shrt=L.filter(function(l){return l.len>0&&l.len<2});
+  if(long.length)f.push({l:2,t:"Haid berlangsung lebih dari 7 hari",d:"Haid yang terlalu lama dapat menyebabkan anemia. Perhatikan jika pembalut perlu diganti tiap 1–2 jam, gumpalan besar, pusing, atau lemas. Segera periksa ke dokter."});
+  if(shrt.length)f.push({l:1,t:"Haid sangat singkat (kurang dari 2 hari)",d:"Perdarahan sangat sedikit atau singkat bisa terjadi karena stres, perubahan berat badan, atau hormon. Pantau dan konsultasi bila berulang."});
+  if(L.length){
+    var last=s2d(L[L.length-1].date),since=diff(today,last),late=since-a;
+    if(since>90)f.push({l:2,t:"Tidak haid lebih dari 3 bulan",d:"Segera periksa ke dokter untuk mencari penyebabnya, termasuk kehamilan, gangguan hormon, atau kondisi lain."});
+    else if(late>7)f.push({l:1,t:"Haid terlambat "+late+" hari",d:"Jika ada kemungkinan hamil, lakukan tes kehamilan. Stres, sakit, dan perubahan pola hidup juga bisa menunda haid. Jika terlambat berlanjut, periksa ke dokter."});
+  }
+  if(p.dob){var age=Math.floor(diff(today,s2d(p.dob))/365.25);if(age>=45)f.push({l:0,t:"Usia "+age+" tahun: masa perimenopause",d:"Siklus yang berubah-ubah umum terjadi pada usia ini. Tetap konsultasikan jika perdarahan sangat banyak atau di luar waktu haid."})}
+  if(!f.some(function(x){return x.l>0})&&L.length>=3)f.unshift({l:0,t:"Siklus dalam batas normal",d:"Pertahankan pola hidup sehat: tidur cukup, aktivitas fisik rutin, makan seimbang, dan minum cukup air."});
+  return f;
+}
+
+function buildMap(p){
+  var m={},rk={haid:4,prediksi:3,ovulasi:2,subur:1},L=starts(p);
+  function put(d,t){var k=d2s(d);if(!m[k]||rk[t]>rk[m[k]])m[k]=t}
+  if(!L.length)return m;
+  var cy=avg(p,L);
+  L.forEach(function(l){for(var i=0;i<(l.len||p.plen);i++)put(add(s2d(l.date),i),"haid")});
+  var last=s2d(L[L.length-1].date);
+  for(var k=0;k<=6;k++){var st=add(last,k*cy);if(k>0)for(var i=0;i<tl(p,L);i++)put(add(st,i),"prediksi");var ov=add(st,cy-14);for(var j=-5;j<=1;j++)put(add(ov,j),"subur");put(ov,"ovulasi")}
+  return m;
+}
+
+function openLog(p){return starts(p).filter(function(l){return !l.len}).pop()}
+function tl(p,L){var c=L.filter(function(l){return l.len>0});if(!c.length)return p.plen;return Math.round(c.reduce(function(a,l){return a+l.len},0)/c.length)}
+function kv(a,b){return '<div class="kv"><span>'+a+'</span><b>'+b+'</b></div>'}
+function predCard(p,ol){
+  var L=starts(p),cy=avg(p,L),st=s2d(ol.date),next=add(st,cy),ov=add(st,cy-14),n=diff(next,today);
+  return '<section class="card" id="res"><h2>Perkiraan untuk siklus ini</h2><div class="two">'
+   +kv("Perkiraan haid selesai",fmt(add(st,tl(p,L)-1),1))+kv("Haid berikutnya",fmt(next,1)+(n>0?" ("+n+" hari lagi)":""))+kv("Perkiraan ovulasi",fmt(ov,1))+kv("Masa subur",fmt(add(ov,-5))+" – "+fmt(add(ov,1)))
+   +'</div><p class="mu">Perkiraan memakai siklus rata-rata '+cy+' hari'+(L.length<3?" dan makin akurat setelah 3 siklus tercatat":"")+'. Setelah haid berhenti, pilih tanggal selesai lalu klik Buat catatan untuk mendapat evaluasi.</p></section>';
+}
+function evalCard(p){
+  var L=starts(p),i=L.length-1;if(i<0||!L[i].len)return"";
+  var cur=L[i],len=cur.len,cl=i>0?diff(s2d(cur.date),s2d(L[i-1].date)):0,f=[],av=avg(p,L);
+  if(len<2)f.push({l:1,t:"Durasi haid terlalu singkat ("+len+" hari)",d:"Perdarahan sangat singkat atau sedikit disebut hipomenorea. Bisa dipicu stres, perubahan berat badan, atau perubahan hormon.",a:["Pantau siklus berikutnya dan catat jumlah darah","Kelola stres, tidur cukup, dan makan teratur","Periksa ke dokter jika berulang 3 siklus atau ada kemungkinan hamil"]});
+  else if(len>7)f.push({l:2,t:"Durasi haid terlalu lama ("+len+" hari)",d:"Haid lebih dari 7 hari (menoragia) dapat menyebabkan anemia dan perlu dicari penyebabnya.",a:["Periksa ke dokter kandungan","Perbanyak makanan kaya zat besi (daging merah, hati, bayam) dan vitamin C","Waspada pusing, lemas, atau pembalut penuh dalam kurang dari 2 jam"]});
+  else f.push({l:0,t:"Durasi haid normal ("+len+" hari)",d:"Haid selama 2–7 hari termasuk normal.",a:[]});
+  if(cl){
+    var sev=L.length>=4&&(av<21||av>35)?2:1;
+    if(cl<21)f.push({l:sev,t:"Siklus terlalu pendek ("+cl+" hari)",d:"Siklus kurang dari 21 hari disebut polimenorea. Ovulasi bisa terganggu atau tidak terjadi.",a:["Catat siklus beberapa bulan ke depan","Hindari stres berat dan perubahan berat badan drastis","Konsultasi ke dokter kandungan jika berulang"]});
+    else if(cl>35)f.push({l:sev,t:"Siklus terlalu panjang ("+cl+" hari)",d:"Siklus lebih dari 35 hari disebut oligomenorea. Bisa terkait gangguan ovulasi, PCOS, atau tiroid. Jika terlambat, pertimbangkan juga kehamilan.",a:["Lakukan tes kehamilan jika ada kemungkinan hamil","Jaga berat badan ideal, tidur cukup, dan olahraga teratur","Periksa ke dokter jika berulang atau disertai jerawat berat atau bulu berlebih"]});
+    else f.push({l:0,t:"Panjang siklus normal ("+cl+" hari)",d:"Siklus 21–35 hari termasuk normal.",a:[]});
+  }else f.push({l:0,t:"Panjang siklus belum bisa dinilai",d:"Dibutuhkan catatan haid sebelumnya untuk menghitung panjang siklus.",a:[]});
+  if(L.length>=4){var c=cycles(L),rg=Math.max.apply(null,c)-Math.min.apply(null,c);if(rg>7)f.push({l:1,t:"Siklus tidak teratur (selisih "+rg+" hari)",d:"Selisih panjang siklus lebih dari 7 hari menandakan siklus belum stabil.",a:["Catat gejala, stres, dan perubahan berat badan","Jaga pola tidur dan makan","Konsultasi ke dokter jika berlangsung 3 bulan atau lebih"]})}
+  var lvl=Math.max.apply(null,f.map(function(x){return x.l}));
+  var V=[["✓ Baik","Haid dan siklus terakhir dalam batas normal."],["! Kurang baik","Ada hal yang perlu diperhatikan."],["! Perlu periksa ke dokter","Sebaiknya berkonsultasi dengan dokter kandungan."]][lvl];
+  if(lvl===0)f.push({l:0,t:"Tetap jaga kesehatan siklus",d:"",a:["Tidur 7–9 jam setiap malam","Olahraga ringan secara teratur","Makan bergizi dengan cukup zat besi dan minum air yang cukup","Catat hari pertama dan hari terakhir setiap haid"]});
+  function item(x){return '<div class="fd l'+x.l+'"><em>'+["Normal","Perhatian","Konsultasi dokter"][x.l]+'</em><strong>'+esc(x.t)+'</strong>'+(x.d?'<p>'+esc(x.d)+'</p>':'')+(x.a.length?'<p><b>Yang perlu dilakukan:</b></p><ul class="ac">'+x.a.map(function(t){return'<li>'+esc(t)+'</li>'}).join("")+'</ul>':'')+'</div>'}
+  return '<section class="card" id="res"><h2>Evaluasi haid '+fmt(s2d(cur.date))+' – '+fmt(add(s2d(cur.date),len-1),1)+'</h2><div class="vd l'+lvl+'">'+V[0]+'</div><p class="mu" style="margin:0 0 12px">'+V[1]+'</p>'+f.map(item).join("")+'<p class="mu">Segera ke dokter jika: pembalut penuh tiap 1–2 jam, gumpalan besar, nyeri hebat, pusing atau pingsan, demam, atau perdarahan di luar jadwal. Evaluasi ini hanya perkiraan, bukan diagnosis.</p></section>';
+}
+function addNote(){
+  var p=P(),d=$("f-date").value;if(!d)return;var ol=openLog(p);
+  if(ol){if(d<ol.date){alert("Tanggal selesai tidak boleh sebelum tanggal mulai ("+fmt(s2d(ol.date),1)+").");return}
+    var n=diff(s2d(d),s2d(ol.date))+1;if(n>20&&!confirm("Durasi haid "+n+" hari. Lanjutkan?"))return;ol.len=n}
+  else{if(S.logs.some(function(l){return l.pid===S.cur&&l.date===d})){alert("Tanggal ini sudah tercatat.");return}
+    S.logs.push({id:uid(),pid:S.cur,date:d,len:0})}
+  selD="";view=new Date(s2d(d).getFullYear(),s2d(d).getMonth(),1);commit();var r=$("res");if(r)r.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function home(p){
+  var L=starts(p),h="",cy=avg(p,L),big="Belum ada catatan",l1="Pilih tanggal hari pertama haid di bawah, lalu klik Buat catatan.",l2="";
+  if(L.length){
+    var last=s2d(L[L.length-1].date),next=add(last,cy),dayOf=diff(today,last)+1,until=diff(next,today),len=L[L.length-1].len||p.plen;
+    big=(dayOf>=1&&dayOf<=len)?"Hari ke-"+dayOf+" haid":until>0?"Haid berikutnya "+until+" hari lagi":until===0?"Perkiraan haid dimulai hari ini":"Terlambat "+(-until)+" hari";
+    l1="Perkiraan haid berikutnya: "+fmt(next,1)+" (siklus rata-rata "+cy+" hari)";
+    var ov=add(last,cy-14);if(diff(ov,today)<-1)ov=add(next,cy-14-cy+0);ov=diff(add(last,cy-14),today)>=-1?add(last,cy-14):add(next,-14);
+    l2="Perkiraan ovulasi: "+fmt(ov)+". Masa subur: "+fmt(add(ov,-5))+" – "+fmt(add(ov,1))+".";
+  }
+  var ol=openLog(p),sd=selD||d2s(today);
+  if(ol){var dn=diff(today,s2d(ol.date))+1;if(dn>=1){big="Hari ke-"+dn+" haid";l1="Haid dimulai "+fmt(s2d(ol.date),1)+". Jika sudah berhenti, pilih tanggal selesai lalu klik Buat catatan."}}
+  h+='<section class="hero"><p>'+esc(p.name)+'</p><p class="big">'+big+'</p><p>'+l1+'</p><p>'+l2+'</p></section>';
+  h+=ol?'<section class="card"><h2>Haid sudah selesai?</h2><p class="mu" style="margin:0 0 12px">Haid dimulai '+fmt(s2d(ol.date),1)+'. Klik tanggal selesai di kalender atau isi di sini, lalu klik Buat catatan.</p><div class="row"><label>Tanggal haid selesai<input type="date" id="f-date" min="'+ol.date+'" value="'+sd+'"></label><button class="b" id="f-add" type="button">Buat catatan</button><button class="g" data-del="'+ol.id+'" type="button">Batalkan</button></div></section>'
+   :'<section class="card"><h2>Haid dimulai?</h2><p class="mu" style="margin:0 0 12px">Klik tanggal hari pertama haid di kalender atau isi di sini, lalu klik Buat catatan. Perkiraan langsung muncul.</p><div class="row"><label>Tanggal hari pertama haid<input type="date" id="f-date" value="'+sd+'"></label><button class="b" id="f-add" type="button">Buat catatan</button></div></section>';
+  h+=ol?predCard(p,ol):evalCard(p);
+  h+='<section class="card"><div class="ch"><button class="g" id="pv" aria-label="Bulan sebelumnya">‹</button><strong>'+MON[view.getMonth()]+" "+view.getFullYear()+'</strong><button class="g" id="nx" aria-label="Bulan berikutnya">›</button></div><div class="gr">'+DW.map(function(x){return'<div class="dw">'+x+'</div>'}).join("")+'</div><div class="gr" style="margin-top:4px">';
+  var map=buildMap(p),first=new Date(view.getFullYear(),view.getMonth(),1).getDay(),n=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+  for(var i=0;i<first;i++)h+="<div></div>";
+  var nm={haid:"haid",prediksi:"perkiraan haid",subur:"masa subur",ovulasi:"perkiraan ovulasi"};
+  for(var d=1;d<=n;d++){var k=d2s(new Date(view.getFullYear(),view.getMonth(),d));h+='<button type="button" data-day="'+k+'" class="d'+(map[k]?" "+map[k]:"")+(k===d2s(today)?" t":"")+(k===sd?" sel":"")+'" aria-label="'+d+" "+MON[view.getMonth()]+(map[k]?", "+nm[map[k]]:"")+'">'+d+"</button>"}
+  h+='</div><div class="lg"><span><i style="background:var(--ro)"></i>Haid</span><span><i style="border:2px dashed var(--ro)"></i>Perkiraan haid</span><span><i style="background:var(--ts)"></i>Masa subur</span><span><i style="background:var(--te)"></i>Ovulasi</span></div><div class="row" style="margin-top:14px;align-items:center"><span>Tanggal dipilih: <b>'+fmt(s2d(sd),1)+'</b></span><button class="b" id="f-add2" type="button">Buat catatan</button></div></section>';
+  h+='<section class="card"><h2>Pola beberapa siklus</h2>'+analyze(p).map(function(x){var n=["Normal","Perhatian","Konsultasi dokter"][x.l];return '<div class="fd l'+x.l+'"><em>'+n+'</em><strong>'+esc(x.t)+'</strong><p>'+esc(x.d)+'</p></div>'}).join("")+'</section>';
+  return h;
+}
+function hist(p){
+  var L=starts(p).reverse();
+  if(!L.length)return '<section class="card"><h2>Riwayat</h2><p class="mu">Belum ada catatan.</p></section>';
+  return '<section class="card"><h2>Riwayat '+esc(p.name)+'</h2><ul>'+L.map(function(l,i){
+    var sub=l.len?"Haid "+l.len+" hari":"Belum ada tanggal berakhir";
+    if(i<L.length-1)sub+=" · siklus "+diff(s2d(l.date),s2d(L[i+1].date))+" hari";
+    return '<li style="flex-wrap:wrap"><span><b>Mulai '+fmt(s2d(l.date),1)+'</b><br><span class="mu">'+sub+'</span></span><span class="row"><label>Berakhir tanggal<input type="date" data-end="'+l.id+'" min="'+l.date+'" value="'+(l.len?d2s(add(s2d(l.date),l.len-1)):"")+'"></label><button class="g" data-del="'+l.id+'">Hapus</button></span></li>'}).join("")+'</ul></section>';
+}
+function sett(){
+  var e=S.profiles.filter(function(p){return p.id===edit})[0]||{name:"",dob:"",cycle:28,plen:5};
+  var h='<section class="card"><h2>Orang yang dipantau</h2>';
+  h+=S.profiles.length?'<ul>'+S.profiles.map(function(p){return'<li><span><b>'+esc(p.name)+'</b><br><span class="mu">Lahir '+(p.dob?fmt(s2d(p.dob),1):"-")+'</span></span><span><button class="g" data-ed="'+p.id+'">Ubah</button> <button class="g" data-pd="'+p.id+'">Hapus</button></span></li>'}).join("")+'</ul>':'<p class="mu">Belum ada profil. Tambahkan di bawah.</p>';
+  h+='</section><section class="card"><h2>'+(edit?"Ubah profil":"Tambah profil")+'</h2><div class="two"><label>Nama<input class="w" id="p-name" value="'+esc(e.name)+'"></label><label>Tanggal lahir<input class="w" type="date" id="p-dob" value="'+e.dob+'"></label><label>Panjang siklus awal (hari)<input class="w" type="number" id="p-cy" min="21" max="45" value="'+e.cycle+'"></label><label>Lama haid biasa (hari)<input class="w" type="number" id="p-pl" min="2" max="10" value="'+e.plen+'"></label></div><div class="row" style="margin-top:12px"><button class="b" id="p-save" type="button">Simpan profil</button>'+(edit?'<button class="g" id="p-cancel" type="button">Batal</button>':"")+'</div><p class="mu" id="p-msg">'+flash+'</p></section>';
+  h+='<section class="card"><h2>Akun</h2><p class="mu" style="margin:0 0 12px">Masuk sebagai <b>'+esc(sess.nama)+'</b> ('+esc(sess.u)+')</p><div class="two"><label>Password saat ini<input class="w" type="password" id="c-old" autocomplete="current-password"></label><label>Password baru (min. 6 karakter)<input class="w" type="password" id="c-new" autocomplete="new-password"></label></div><div class="row" style="margin-top:12px"><button class="b" id="c-save" type="button">Ganti password</button><button class="g" id="c-out" type="button">Keluar</button></div><p class="mu" id="c-msg"></p></section>';
+  return h;
+}
+function render(){
+  document.body.className=sess?"":"out";
+  if(!sess){$("app").innerHTML=authView();bind();return}
+  $("hn").textContent="Halo, "+sess.nama;
+  var sel=$("sel");sel.innerHTML=S.profiles.map(function(p){return'<option value="'+p.id+'"'+(p.id===S.cur?" selected":"")+'>'+esc(p.name)+'</option>'}).join("")||'<option>Belum ada profil</option>';
+  Array.prototype.forEach.call(document.querySelectorAll("nav button"),function(b){b.setAttribute("aria-selected",b.dataset.t===tab)});
+  var p=P(),a=$("app");
+  if(tab==="set")a.innerHTML=sett();
+  else if(!p)a.innerHTML='<section class="card"><h2>Selamat datang</h2><p>Tambahkan orang yang akan dipantau terlebih dahulu di menu Pengaturan.</p><button class="b" id="go" type="button">Buka Pengaturan</button></section>';
+  else a.innerHTML=tab==="home"?home(p):hist(p);
+  bind();
+}
+function on(id,f){var e=$(id);if(e)e.addEventListener("click",f)}
+function bind(){
+  on("go",function(){tab="set";render()});
+  on("pv",function(){view=new Date(view.getFullYear(),view.getMonth()-1,1);render()});
+  on("nx",function(){view=new Date(view.getFullYear(),view.getMonth()+1,1);render()});
+  on("f-add",addNote);on("f-add2",addNote);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-del]"),function(b){b.addEventListener("click",function(){S.logs=S.logs.filter(function(l){return l.id!==b.dataset.del});commit()})});
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ed]"),function(b){b.addEventListener("click",function(){edit=b.dataset.ed;flash="";render()})});
+  Array.prototype.forEach.call(document.querySelectorAll("[data-pd]"),function(b){b.addEventListener("click",function(){if(!confirm("Hapus profil ini beserta seluruh catatannya?"))return;var id=b.dataset.pd;S.profiles=S.profiles.filter(function(p){return p.id!==id});S.logs=S.logs.filter(function(l){return l.pid!==id});if(S.cur===id)S.cur=S.profiles[0]?S.profiles[0].id:null;commit()})});
+  Array.prototype.forEach.call(document.querySelectorAll("[data-end]"),function(b){b.addEventListener("change",function(){var l=S.logs.filter(function(x){return x.id===b.dataset.end})[0];if(!l||!b.value)return;var n=diff(s2d(b.value),s2d(l.date))+1;if(n<1)return;l.len=n;commit()})});
+  on("a-in",function(){authTab="in";authMsg="";render()});
+  on("a-up",function(){authTab="up";authMsg="";render()});
+  on("a-go",doAuth);
+  ["a-u","a-n","a-p"].forEach(function(i){var e=$(i);if(e)e.addEventListener("keydown",function(ev){if(ev.key==="Enter")doAuth()})});
+  on("c-out",function(){if(confirm("Keluar dari akun?"))logout()});
+  on("c-save",function(){var m=$("c-msg"),o=$("c-old").value,n=$("c-new").value;
+    hash(sess.u,o).then(function(h){if(h!==sess.h){m.textContent="Password saat ini salah.";return}
+      if(n.length<6){m.textContent="Password baru minimal 6 karakter.";return}
+      return hash(sess.u,n).then(function(nh){return api({a:"passwd",u:sess.u,h:sess.h,nh:nh}).then(function(d){if(d.ok){sess.h=nh;sv();m.textContent="Password berhasil diganti.";$("c-old").value="";$("c-new").value=""}else m.textContent=d.msg||"Gagal mengganti password."})})}).catch(function(){m.textContent="Tidak dapat terhubung ke server."})});
+  Array.prototype.forEach.call(document.querySelectorAll("[data-day]"),function(b){b.addEventListener("click",function(){selD=b.dataset.day;render()})});
+  var fd=$("f-date");if(fd)fd.addEventListener("change",function(){if(!this.value)return;selD=this.value;view=new Date(s2d(selD).getFullYear(),s2d(selD).getMonth(),1);render()});
+  on("p-cancel",function(){edit=null;flash="";render()});
+  on("p-save",function(){
+    var nm=$("p-name").value.trim();if(!nm){$("p-msg").textContent="Nama wajib diisi.";return}
+    var o={name:nm,dob:$("p-dob").value,cycle:Math.min(45,Math.max(21,+$("p-cy").value||28)),plen:Math.min(10,Math.max(2,+$("p-pl").value||5))};
+    if(edit){S.profiles.forEach(function(p){if(p.id===edit)for(var k in o)p[k]=o[k]})}
+    else{o.id=uid();S.profiles.push(o);S.cur=o.id}
+    edit=null;flash="Profil tersimpan.";commit();
+  });
+}
+$("so").addEventListener("click",function(){if(confirm("Keluar dari akun ini? Anda bisa masuk lagi dengan akun yang sama atau akun lain."))logout()});
+$("sel").addEventListener("change",function(){S.cur=this.value;sv();render()});
+Array.prototype.forEach.call(document.querySelectorAll("nav button"),function(b){b.addEventListener("click",function(){tab=b.dataset.t;edit=null;flash="";render()})});
+
+render();
+$("sp-msg").textContent=sess?"Memuat data dari Google Sheets…":"Menyiapkan aplikasi…";
+var t0=Date.now();
+(sess?api({a:"login",u:sess.u,h:sess.h}).then(function(d){if(d.ok){load(d);setSync("ok")}else{authMsg="Sesi berakhir, silakan masuk lagi.";logout()}}).catch(function(){setSync("err")}):Promise.resolve()).then(function(){
+  render();
+  setTimeout(function(){$("splash").classList.add("hide")},Math.max(0,1700-(Date.now()-t0)));
+});
+})();
+</script>
+</body>
+</html>
